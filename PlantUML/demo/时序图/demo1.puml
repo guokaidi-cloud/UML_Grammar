@@ -1,0 +1,15 @@
+@startuml
+' 参与者声明
+actor 用户
+participant "前端页面" as Frontend
+participant "后端API" as Backend
+database "数据库" as DB
+
+' 交互流程
+用户 -> Frontend: 输入用户名密码
+Frontend -> Backend: POST /api/login
+Backend -> DB: 查询用户信息
+DB --> Backend: 返回用户数据
+Backend --> Frontend: 返回 JWT Token
+Frontend --> 用户: 登录成功
+@enduml

@@ -1,0 +1,41 @@
+@startuml
+title 用户支付流程
+
+actor 用户
+participant "前端" as F
+participant "订单服务" as O
+participant "支付服务" as P
+participant "第三方支付" as T
+database Redis
+database MySQL
+
+用户 -> F: 点击支付
+activate F
+
+F -> O: 创建订单
+activate O
+O -> MySQL: 保存订单
+O -> Redis: 缓存订单信息
+O --> F: 返回订单号
+deactivate O
+
+F -> P: 发起支付请求
+activate P
+P -> T: 调用支付接口
+activate T
+
+alt 支付成功
+    T --> P: 支付成功回调
+    P -> O: 更新订单状态
+    P --> F: 支付成功
+    F --> 用户: 显示支付成功
+else 支付失败
+    T --> P: 支付失败
+    P --> F: 支付失败
+    F --> 用户: 显示失败原因
+end
+
+deactivate T
+deactivate P
+deactivate F
+@enduml

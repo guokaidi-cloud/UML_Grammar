@@ -1,0 +1,92 @@
+@startuml
+title 电商系统类图
+
+abstract class User {
+  # id: Long
+  # username: String
+  # email: String
+  # createTime: Date
+  --
+  + login(): boolean
+  + logout(): void
+  # validateEmail(): boolean
+}
+
+class Customer extends User {
+  - address: String
+  - phone: String
+  --
+  + placeOrder(Order): void
+  + viewOrderHistory(): List<Order>
+}
+
+class Admin extends User {
+  - role: String
+  --
+  + manageProducts(): void
+  + viewReports(): void
+}
+
+class Product {
+  - id: Long
+  - name: String
+  - price: BigDecimal
+  - stock: Integer
+  - category: Category
+  --
+  + updateStock(int): void
+  + getDiscountPrice(): BigDecimal
+}
+
+class Order {
+  - orderId: String
+  - customer: Customer
+  - orderDate: Date
+  - status: OrderStatus
+  - totalAmount: BigDecimal
+  --
+  + calculateTotal(): BigDecimal
+  + cancel(): void
+  + pay(): boolean
+}
+
+class OrderItem {
+  - product: Product
+  - quantity: Integer
+  - price: BigDecimal
+  --
+  + getSubTotal(): BigDecimal
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+class Category {
+  - id: Long
+  - name: String
+  - parentCategory: Category
+}
+
+' 关系定义
+Customer "1" -- "*" Order : places >
+Order "1" *-- "*" OrderItem : contains
+OrderItem "*" --> "1" Product : refers to
+Product "*" --> "1" Category : belongs to
+Order --> OrderStatus : has
+
+note right of Order
+  订单创建后24小时内
+  未支付将自动取消
+end note
+
+note top of Product
+  商品价格支持促销折扣
+  库存不足时无法下单
+end note
+
+@enduml

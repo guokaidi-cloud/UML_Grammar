@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor 顾客
+actor 收银员
+actor 管理员
+
+rectangle 电商系统 {
+  顾客 -- (浏览商品)
+  顾客 -- (添加购物车)
+  顾客 -- (下单支付)
+  顾客 -- (查看订单)
+  
+  收银员 -- (处理订单)
+  收银员 -- (处理退款)
+  
+  管理员 -- (管理商品)
+  管理员 -- (查看报表)
+  管理员 -- (管理用户)
+  
+  (下单支付) .> (添加购物车) : <<include>>
+  (处理退款) .> (处理订单) : <<extend>>
+}
+@enduml
