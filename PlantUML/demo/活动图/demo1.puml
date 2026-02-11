@@ -1,0 +1,48 @@
+@startuml
+title 用户注册流程
+
+start
+
+:用户访问注册页面;
+
+:填写注册信息;
+note right
+  包括：
+  * 用户名
+  * 邮箱
+  * 密码
+end note
+
+:提交注册表单;
+
+if (表单验证通过?) then (是)
+  :保存用户信息;
+  
+  fork
+    :发送欢迎邮件;
+  fork again
+    :发送短信通知;
+  fork again
+    :记录注册日志;
+  end fork
+  
+  :跳转到登录页面;
+  :显示注册成功提示;
+  
+else (否)
+  :显示错误信息;
+  
+  if (重试次数 < 3?) then (是)
+    :返回注册页面;
+    :保留已填写信息;
+  else (否)
+    :锁定注册;
+    :显示联系客服提示;
+    stop
+  endif
+  
+endif
+
+stop
+
+@enduml
